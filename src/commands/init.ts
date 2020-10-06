@@ -117,7 +117,7 @@ export class InitCommand extends Command {
       {
         name: "output_path",
         message:
-          "Where do you want to save the translations? (Combine with variables $LOCALE, $locale, $FOLDERNAME, $FILENAME which are provided by the input path)",
+          "Where do you want to save the translations? (Combine with variables $LOCALE, $locale, $FOLDERNAME, $FILE which are provided by the input path)",
         type: "input",
       },
       {
