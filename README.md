@@ -57,7 +57,7 @@ $ yarn run simpleen lock
 $ yarn run simpleen translate
 ```
 
-To use the cli-tool [https://simpleen.io/signup](signup on simpleen.io) and create an authentication key.
+To use the cli-tool [signup on simpleen.io](https://simpleen.io/signup) and create an authentication key.
 Then you can run `simpleen init` and answer the prompted configuration questions. In the last step you will be asked for your authentication key.
 
 As a next step you should fix/lock the current translations with `simpleen lock`. The locked translations are not getting translated by machine translation.
