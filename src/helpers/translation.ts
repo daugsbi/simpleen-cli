@@ -3,6 +3,7 @@ import md5 from "md5";
 import glob, { IOptions } from "glob";
 import axios from "axios";
 import { SimpleenConfig } from "./config";
+import merge from "lodash.merge";
 
 /**
  * Replace variables in provided outputPath
@@ -90,10 +91,7 @@ export function translateIntoLanguage(
       )
       .then((value: any) => {
         // merge with translatedData
-        resolve({
-          ...translatedData,
-          ...value.data,
-        });
+        resolve(merge(value.data, translatedData));
       })
       .catch((e) => {
         console.log(e.message);
