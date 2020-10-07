@@ -142,7 +142,7 @@ OPTIONS
 
 ## `simpleen help [COMMAND]`
 
-Display help for simpleen
+Display help for Simpleen.
 
 ```
 USAGE
@@ -160,4 +160,4 @@ OPTIONS
 # Beta
 
 This version is part of an open beta of Simpleen. As a precaution please make sure that the project is under version control before running `simpleen translate`.
-For feedback, discussions, improvements feel free to get in touch with us or tweet and blog about Simpleen.
+Feel free to get in touch with us for feedback, discussions, improvements or tweet and blog about Simpleen.
