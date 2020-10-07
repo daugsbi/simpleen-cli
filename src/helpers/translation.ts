@@ -24,7 +24,7 @@ export function replaceVariablesInPath(
   return outputPath
     .replace("$LOCALE", language.toUpperCase())
     .replace("$locale", language.toLowerCase())
-    .replace("$FOLDERNAME", folder)
+    .replace("$FOLDER", folder)
     .replace("$FILE", file)
     .replace("$EXTENSION", ext);
 }
