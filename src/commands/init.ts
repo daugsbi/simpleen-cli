@@ -1,12 +1,10 @@
 import Command, { flags } from "@oclif/command";
 import * as inquirer from "inquirer";
 import * as fuzzy from "fuzzy";
-import { SimpleenConfig, saveConfig } from "../helpers/config";
+import checkboxPlusPrompt from "inquirer-checkbox-plus-prompt";
+import config, { SimpleenConfig } from "../helpers/config";
 
-inquirer.registerPrompt(
-  "checkbox-plus",
-  require("inquirer-checkbox-plus-prompt")
-);
+inquirer.registerPrompt("checkbox-plus", checkboxPlusPrompt);
 
 export const target_languages = [
   { name: "Chinese", value: "ZH" },
@@ -56,10 +54,10 @@ export class InitCommand extends Command {
     }),
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { flags } = this.parse(InitCommand);
 
-    let responses: SimpleenConfig = await inquirer.prompt([
+    const responses: SimpleenConfig = await inquirer.prompt([
       {
         name: "source_language",
         message: "Select your source language",
@@ -83,13 +81,13 @@ export class InitCommand extends Command {
           input = input || "";
 
           return new Promise(function (resolve) {
-            var fuzzyResult = fuzzy.filter(input, target_languages, {
+            const fuzzyResult = fuzzy.filter(input, target_languages, {
               extract: function (item) {
                 return item["name"];
               },
             });
 
-            var data = fuzzyResult.map(function (element) {
+            const data = fuzzyResult.map(function (element) {
               return element.original;
             });
 
@@ -117,7 +115,7 @@ export class InitCommand extends Command {
       {
         name: "output_path",
         message:
-          "Where do you want to save the translations? (Combine with variables $LOCALE, $locale, $FOLDERNAME, $FILE which are provided by the input path)",
+          "Where do you want to save the translations? (Combine with variables $LOCALE, $locale, $FOLDER, $FILE which are provided by the input path)",
         type: "input",
       },
       {
@@ -137,7 +135,7 @@ export class InitCommand extends Command {
     ]);
 
     // Save configuration for further usage
-    saveConfig(responses, flags.config);
+    config.saveConfig(responses, flags.config);
 
     this.log(`Configuration ${flags.config} saved`);
   }

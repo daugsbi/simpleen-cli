@@ -1,9 +1,16 @@
+import { CLIError } from "@oclif/errors";
 import path from "path";
 import md5 from "md5";
 import glob, { IOptions } from "glob";
 import axios from "axios";
 import { SimpleenConfig } from "./config";
 import merge from "lodash.merge";
+import { readFileSync, existsSync } from "fs";
+import { writeFileSync } from "fs";
+
+export type TranslationData = {
+  [key: string]: string;
+};
 
 /**
  * Replace variables in provided outputPath
@@ -18,7 +25,9 @@ export function replaceVariablesInPath(
   language: string
 ): string {
   const file = path.basename(filePath, path.extname(filePath));
-  const ext = path.extname(filePath);
+  const ext = path.extname(filePath)
+    ? path.extname(filePath).substr(1)
+    : path.extname(filePath);
   const folder = path.basename(path.dirname(filePath));
 
   return outputPath
@@ -67,10 +76,10 @@ export function getFilePaths(inputPath: string): Promise<string[]> {
  */
 export function translateIntoLanguage(
   config: SimpleenConfig,
-  translatedData: any,
-  toBeTranslated: any,
+  translatedData: TranslationData,
+  toBeTranslated: TranslationData,
   language: string
-) {
+): Promise<TranslationData> {
   return new Promise((resolve, reject) => {
     // Translate
     axios
@@ -89,7 +98,7 @@ export function translateIntoLanguage(
           },
         }
       )
-      .then((value: any) => {
+      .then((value: { data: TranslationData }) => {
         // merge with translatedData
         resolve(merge(value.data, translatedData));
       })
@@ -99,3 +108,39 @@ export function translateIntoLanguage(
       });
   });
 }
+
+export function loadTranslation(file: string): TranslationData {
+  try {
+    if (existsSync(file)) {
+      const data = readFileSync(file, "utf-8");
+      return JSON.parse(data);
+    }
+    // File does not exist
+    return {};
+  } catch (e) {
+    // Probably file is corrupt
+    throw new CLIError(
+      `Could not load and parse file: ${file} \n ${e.message}`
+    );
+  }
+}
+
+export function saveTranslation(
+  targetFile: string,
+  data: TranslationData
+): void {
+  try {
+    writeFileSync(targetFile, JSON.stringify(data, null, 2));
+  } catch (e) {
+    throw new CLIError("Could not save translation result - " + e.message);
+  }
+}
+
+export default {
+  replaceVariablesInPath,
+  getHashFromPath,
+  getFilePaths,
+  loadTranslation,
+  translateIntoLanguage,
+  saveTranslation,
+};

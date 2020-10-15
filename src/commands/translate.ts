@@ -1,63 +1,56 @@
-import Command, { flags } from '@oclif/command';
-import { CLIError } from '@oclif/errors';
-import { writeFileSync, readFileSync } from 'fs';
-import flatten from 'flat';
-import omit from 'lodash.omit';
-import Listr, { ListrTask } from 'listr';
-import { readConfig, SimpleenConfig } from '../helpers/config';
-import { loadLockFile } from '../helpers/lock';
-import {
-  replaceVariablesInPath,
-  getFilePaths,
-  getHashFromPath,
-  translateIntoLanguage,
-} from '../helpers/translation';
+import Command, { flags } from "@oclif/command";
+import { CLIError } from "@oclif/errors";
+import flatten from "flat";
+import omit from "lodash.omit";
+import Listr, { ListrTask } from "listr";
+import configHelper from "../helpers/config";
+import lockHelper from "../helpers/lock";
+import translationHelper from "../helpers/translation";
 
 /**
  * Translates project to the configured target languages
  * considers the lock file to exclude allready translated/verfied translations
  */
 export class TranslateCommand extends Command {
-  static description = 'Translate project';
+  static description = "Translate project";
 
   static flags = {
     config: flags.string({
-      default: './simpleen.config.json',
-      description: 'Defines where you config file is located',
+      default: "./simpleen.config.json",
+      description: "Defines where you config file is located",
     }),
     lockFile: flags.string({
-      default: './simpleen.lock.json',
-      description: 'Defines where your lock file is located',
+      default: "./simpleen.lock.json",
+      description: "Defines where your lock file is located",
     }),
   };
 
-  async run() {
+  async run(): Promise<void> {
     const { flags } = this.parse(TranslateCommand);
 
-    let config = readConfig(flags.config);
+    const config = configHelper.loadConfig(flags.config);
 
     const translationTasks: ListrTask[] = [];
 
     // Read lock file
-    const lockData = loadLockFile(flags.lockFile);
+    const lockData = lockHelper.loadLockFile(flags.lockFile);
 
     // Read all source files to translate
-    const files = await getFilePaths(config.input_path);
+    const files = await translationHelper.getFilePaths(config.input_path);
 
     // Read each file and translate it
     files.forEach((file) => {
       try {
-        const data = readFileSync(file, 'utf-8');
-        const translationData = JSON.parse(data);
+        const translationData = translationHelper.loadTranslation(file);
 
         config.target_languages.forEach((language: string) => {
           // Target file
-          const targetFile = replaceVariablesInPath(
+          const targetFile = translationHelper.replaceVariablesInPath(
             file,
             config.output_path,
-            language,
+            language
           );
-          const targetHash = getHashFromPath(targetFile);
+          const targetHash = translationHelper.getHashFromPath(targetFile);
 
           const translatedData = lockData?.[targetHash]?.[language]
             ? lockData[targetHash][language]
@@ -75,21 +68,18 @@ export class TranslateCommand extends Command {
           translationTasks.push({
             title: `Translate ${totalTranslate}/${total} ${config.source_language} => ${language}`,
             task: async () => {
-              const result = await translateIntoLanguage(
+              const result = await translationHelper.translateIntoLanguage(
                 config,
                 translatedData,
                 toBeTranslated,
-                language,
+                language
               );
 
-              writeFileSync(
-                targetFile,
-                JSON.stringify(result, null, 2),
-              );
+              translationHelper.saveTranslation(targetFile, result);
             },
             skip: () => {
               if (total === 0) {
-                return 'No data found to translate';
+                return "No data found to translate";
               }
               if (totalTranslate === 0) {
                 return `All keys are locked (${omitKeys.length} of ${total})`;
