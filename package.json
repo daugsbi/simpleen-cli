@@ -1,7 +1,7 @@
 {
   "name": "simpleen",
   "description": "Translate i18n locale files with simpleen translation",
-  "version": "0.0.1-alpha.6",
+  "version": "0.0.1-beta",
   "author": "Denis Augsburger <denis.augsburger@simpleen.io> (https://simpleen.io)",
   "bin": {
     "simpleen": "./bin/run"
