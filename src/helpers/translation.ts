@@ -103,8 +103,14 @@ export function translateIntoLanguage(
         resolve(merge(value.data, translatedData));
       })
       .catch((e) => {
-        console.log(e.message);
-        reject(e.message);
+        if (e?.response?.status === 401) {
+          reject(
+            "Authentication error - check your authentication key in your config file"
+          );
+        }
+        reject(
+          `${e.response ? e.response.status : ""} - Request failed ${e.message}`
+        );
       });
   });
 }

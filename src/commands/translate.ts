@@ -68,14 +68,18 @@ export class TranslateCommand extends Command {
           translationTasks.push({
             title: `Translate ${totalTranslate}/${total} ${config.source_language} => ${language}`,
             task: async () => {
-              const result = await translationHelper.translateIntoLanguage(
-                config,
-                translatedData,
-                toBeTranslated,
-                language
-              );
+              try {
+                const result = await translationHelper.translateIntoLanguage(
+                  config,
+                  translatedData,
+                  toBeTranslated,
+                  language
+                );
 
-              translationHelper.saveTranslation(targetFile, result);
+                translationHelper.saveTranslation(targetFile, result);
+              } catch (e) {
+                throw new CLIError(e);
+              }
             },
             skip: () => {
               if (total === 0) {
