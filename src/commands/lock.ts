@@ -1,7 +1,8 @@
 import Command, { flags } from "@oclif/command";
-import configHelper from "../helpers/config";
 import inquirer from "inquirer";
+import chalk from "chalk";
 import { target_languages } from "./init";
+import configHelper from "../helpers/config";
 import lockHelper, { LockData } from "../helpers/lock";
 import {
   replaceVariablesInPath,
@@ -15,7 +16,7 @@ import {
  * The locked translations will not be changed afterwards
  */
 export class LockCommand extends Command {
-  static description = "Lock the current translation values";
+  static description = "[Deprecated] Lock the current translation values";
 
   static flags = {
     config: flags.string({
@@ -29,6 +30,10 @@ export class LockCommand extends Command {
   };
 
   async run(): Promise<void> {
+    console.warn(
+      chalk.yellow("[Deprecated] Translations are saved on simpleen.io")
+    );
+
     const { flags } = this.parse(LockCommand);
     const config = configHelper.loadConfig(flags.config);
 
