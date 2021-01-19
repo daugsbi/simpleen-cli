@@ -29,7 +29,7 @@ export function getUsage(config: SimpleenConfig): Promise<UsageData> {
         resolve(value.data);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.status === 401 || e?.response?.status === 403) {
           reject(
             "Authentication error - check your authentication key in your config file"
           );

@@ -97,11 +97,12 @@ export class TranslateCommand extends Command {
       }
     });
 
-    // Run tasks
-    const tasks = new Listr(translationTasks);
+    // Run tasks, continue with next language if error occurs
+    const tasks = new Listr(translationTasks, { exitOnError: false });
 
     tasks.run().catch((err) => {
-      throw new CLIError(err);
+      // handled in Listr, continues with translation to next language
+      // console.error(err.message);
     });
   }
 }
