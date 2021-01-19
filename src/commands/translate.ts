@@ -101,7 +101,7 @@ export class TranslateCommand extends Command {
     const tasks = new Listr(translationTasks);
 
     tasks.run().catch((err) => {
-      this.error(err);
+      throw new CLIError(err);
     });
   }
 }
