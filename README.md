@@ -66,6 +66,8 @@ As a next step you can fix/lock the current translations with `simpleen lock`. T
 - [`simpleen init config=[FILE]`](#simpleen-init)
 - [`simpleen lock config=[FILE]`](#simplen-lock)
 - [`simpleen translate config=[FILE] lockFile=[FILE]`](#simpleen-translate)
+- [`simpleen upload config=[FILE]`](#simplen-upload)
+- [`simpleen usage config=[FILE]`](#simplen-usage)
 - [`simpleen help [COMMAND]`](#simpleen-help-command)
 
 ## `simpleen init`
@@ -112,7 +114,7 @@ The created configuration file could look like this:
 }
 ```
 
-## `simpleen lock`
+## [Deprecated - use simpleen upload] `simpleen lock`
 
 Locks the current translation results. Locked translations will not be overwritten by `simpleen translate`.
 Lock the translations after manual changes and put it under version control, otherwise they are overwritten with the next run of `simpleen translate`.
@@ -139,6 +141,15 @@ OPTIONS
   --config=config      [default: ./simpleen.config.json] Defines where you config file is located
   --lockFile=lockFile  [default: ./simpleen.lock.json] Defines where your lock file is located
 ```
+
+## `simpleen upload`
+
+Saves the current translation results at simpleen.io. These are used for subsequent translations and are not counted to your quota.
+If you have already some parts translated, use this command before `simpleen translate` to save your progress. Also if you have adapted your target files, use this command to sync your changes.
+
+## `simpleen usage`
+
+Shows the current quota of your account. A segment is one translatable value in your JSON file.
 
 ## `simpleen help [COMMAND]`
 

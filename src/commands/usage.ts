@@ -1,4 +1,5 @@
-import Command, { flags } from "@oclif/command";
+import { flags } from "@oclif/command";
+import Command from "../BaseCommand";
 import { CLIError } from "@oclif/errors";
 import { getUsage } from "../helpers/usage";
 import configHelper from "../helpers/config";

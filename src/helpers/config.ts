@@ -1,12 +1,18 @@
 import { readFileSync, writeFileSync } from "fs";
 import { CLIError } from "@oclif/errors";
 
+export type DataFormat = "JSON" | "YAML" | "Properties" | "PHPArray";
+
+export type Formality = "default" | "less" | "more";
+
+//                          {i18n}, {{i18next}}, %{polyglot}, ${ruby}
+export type Interpolation = "i18n" | "i18next" | "polyglot" | "ruby";
+
 export type SimpleenConfig = {
   // en, de
   source_language: string;
   target_languages: string[];
-  //             {i18n}, {{i18next}}, %{polyglot}, ${ruby}
-  interpolation: "i18n" | "i18next" | "polyglot" | "ruby";
+  interpolation: Interpolation;
   input_path: string;
   output_path: string;
 

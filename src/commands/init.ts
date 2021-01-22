@@ -1,4 +1,5 @@
-import Command, { flags } from "@oclif/command";
+import { flags } from "@oclif/command";
+import Command from "../BaseCommand";
 import * as inquirer from "inquirer";
 import * as fuzzy from "fuzzy";
 import checkboxPlusPrompt from "inquirer-checkbox-plus-prompt";

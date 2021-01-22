@@ -1,4 +1,4 @@
-import axios from "axios";
+import { getData } from "./api";
 import { SimpleenConfig } from "./config";
 
 export type UsageData = {
@@ -16,27 +16,5 @@ export type UsageData = {
  * @param config loaded simpleen config file
  */
 export function getUsage(config: SimpleenConfig): Promise<UsageData> {
-  return new Promise((resolve, reject) => {
-    // Translate
-    axios
-      .get("https://api.simpleen.io/usages/info", {
-        params: {
-          auth_key: config.auth_key,
-        },
-      })
-      .then((value: { data: UsageData }) => {
-        // merge with translatedData
-        resolve(value.data);
-      })
-      .catch((e) => {
-        if (e?.response?.status === 401 || e?.response?.status === 403) {
-          reject(
-            "Authentication error - check your authentication key in your config file"
-          );
-        }
-        reject(
-          `${e.response ? e.response.status : ""} - Request failed ${e.message}`
-        );
-      });
-  });
+  return getData(config, "usages/info");
 }

@@ -1,4 +1,5 @@
-import Command, { flags } from "@oclif/command";
+import { flags } from "@oclif/command";
+import Command from "../BaseCommand";
 import { CLIError } from "@oclif/errors";
 import flatten from "flat";
 import omit from "lodash.omit";

@@ -2,8 +2,8 @@ import { CLIError } from "@oclif/errors";
 import path from "path";
 import md5 from "md5";
 import glob, { IOptions } from "glob";
-import axios from "axios";
 import { SimpleenConfig } from "./config";
+import { createData } from "./api";
 import merge from "lodash.merge";
 import { readFileSync, existsSync } from "fs";
 import { writeFileSync } from "fs";
@@ -80,39 +80,16 @@ export function translateIntoLanguage(
   toBeTranslated: TranslationData,
   language: string
 ): Promise<TranslationData> {
-  return new Promise((resolve, reject) => {
-    // Translate
-    axios
-      .post(
-        "https://api.simpleen.io/translate",
-        {
-          format: "JSON",
-          interpolation: config.interpolation,
-          source_language: config.source_language,
-          target_language: language,
-          text: JSON.stringify(toBeTranslated),
-        },
-        {
-          params: {
-            auth_key: config.auth_key,
-          },
-        }
-      )
-      .then((value: { data: TranslationData }) => {
-        // merge with translatedData
-        resolve(merge(value.data, translatedData));
-      })
-      .catch((e) => {
-        if (e?.response?.status === 401 || e?.response?.status === 403) {
-          reject(
-            "Authentication error - check your authentication key in your config file"
-          );
-        }
-        reject(
-          `${e.response ? e.response.status : ""} - Request failed ${e.message}`
-        );
-      });
-  });
+  return createData<TranslationData>(config, "translate", {
+    format: "JSON",
+    interpolation: config.interpolation,
+    source_language: config.source_language,
+    target_language: language,
+    text: JSON.stringify(toBeTranslated),
+  }).then((data: TranslationData) => {
+    // merge with translatedData
+    return merge(data, translatedData);
+  })
 }
 
 export function loadTranslation(file: string): TranslationData {

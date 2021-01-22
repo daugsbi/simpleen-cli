@@ -1,4 +1,5 @@
-import Command, { flags } from "@oclif/command";
+import { flags } from "@oclif/command";
+import Command from "../BaseCommand";
 import inquirer from "inquirer";
 import chalk from "chalk";
 import { target_languages } from "./init";
