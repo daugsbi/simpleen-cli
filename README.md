@@ -9,14 +9,16 @@ Translate i18n locale files with Simpleen
 
 <!-- toc -->
 
-- [Usage](#Usage)
-- [Installation](#Installation)
-- [Commands](#Commands)
+- [Usage](#usage)
+- [Installation](#installation)
+- [Commands](#commands)
   - [`simpleen init`](#simpleen-init)
-  - [`simpleen lock`](#simpleen-lock)
+  - [[Deprecated - use simpleen upload] `simpleen lock`](#deprecated---use-simpleen-upload-simpleen-lock)
   - [`simpleen translate`](#simpleen-translate)
-  - [`simpleen help [COMMAND]`](#simpleen-help-COMMAND)
-- [Beta](#Beta)
+  - [`simpleen upload`](#simpleen-upload)
+  - [`simpleen usage`](#simpleen-usage)
+  - [`simpleen help [COMMAND]`](#simpleen-help-command)
+- [Beta](#beta)
 <!-- tocstop -->
 
 # Usage
