@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Readme updated
 - Add info if update of CLI is available
+- Fix command description of usage
 
 ## [0.1.0] - 2021-01-22
 

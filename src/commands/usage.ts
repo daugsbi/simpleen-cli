@@ -8,7 +8,7 @@ import configHelper from "../helpers/config";
  * Get current quota / usage of API
  */
 export class UsageCommand extends Command {
-  static description = "Configure your project";
+  static description = "Displays the current quota and usage of your plan";
 
   static flags = {
     config: flags.string({
