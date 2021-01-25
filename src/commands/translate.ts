@@ -1,4 +1,5 @@
 import { flags } from "@oclif/command";
+import chalk from "chalk";
 import Command from "../BaseCommand";
 import { CLIError } from "@oclif/errors";
 import flatten from "flat";
@@ -7,6 +8,7 @@ import Listr, { ListrTask } from "listr";
 import configHelper from "../helpers/config";
 import lockHelper from "../helpers/lock";
 import translationHelper from "../helpers/translation";
+import { getUsage } from "../helpers/usage";
 
 /**
  * Translates project to the configured target languages
@@ -96,6 +98,21 @@ export class TranslateCommand extends Command {
       } catch (e) {
         throw new CLIError(e);
       }
+    });
+
+    // Check usage after all translations
+    translationTasks.push({
+      title: "Check usage",
+      task: async () => {
+        const quota = await getUsage(config);
+        if (quota.usage.segment >= quota.plan.maxSegment) {
+          console.warn(
+            chalk.yellow(
+              "Limit reached. All text segments that exceed your usage limit are omitted from the result. \nYou can upgrade now to keep localizing on https://simpleen.io/app/#/upgrade"
+            )
+          );
+        }
+      },
     });
 
     // Run tasks, continue with next language if error occurs

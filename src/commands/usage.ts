@@ -1,4 +1,5 @@
 import { flags } from "@oclif/command";
+import chalk from "chalk";
 import Command from "../BaseCommand";
 import { CLIError } from "@oclif/errors";
 import { getUsage } from "../helpers/usage";
@@ -29,7 +30,9 @@ export class UsageCommand extends Command {
       );
       if (result.usage.segment >= result.plan.maxSegment) {
         console.warn(
-          "All segments used. Please upgrade on https://simpleen.io/app/#/upgrade"
+          chalk.yellow(
+            "All segments used. Please upgrade on https://simpleen.io/app/#/upgrade"
+          )
         );
       }
     } catch (e) {
