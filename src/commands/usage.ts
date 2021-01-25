@@ -31,7 +31,7 @@ export class UsageCommand extends Command {
       if (result.usage.segment >= result.plan.maxSegment) {
         console.warn(
           chalk.yellow(
-            "All segments used. Please upgrade on https://simpleen.io/app/#/upgrade"
+            "Limit reached. \nYou can upgrade now to keep localizing on https://simpleen.io/app/#/upgrade"
           )
         );
       }
