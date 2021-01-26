@@ -101,10 +101,18 @@ export class InitCommand extends Command {
         message: "Select your interpolation",
         type: "list",
         choices: [
-          { name: "{{ variable }}", value: "i18next" },
-          { name: "{ variable }", value: "i18n" },
-          { name: "%{ variable }", value: "polyglot" },
-          { name: "${ variable }", value: "ruby" },
+          { id: "polyglot", name: "%{ variable }" },
+          { id: "i18next", name: "{{ variable }}" },
+          { id: "i18n", name: "{ variable }" },
+          {
+            id: "icu",
+            name: "ICU Messages, i.e. { variable, number, ::currency/USD }",
+          },
+          // eslint-disable-next-line
+          { id: "ruby", name: "${ variable }" },
+          { id: "laravel", name: ":variable" },
+          { id: "default", name: "Automatic" },
+          { id: "none", name: "None" },
         ],
       },
       {

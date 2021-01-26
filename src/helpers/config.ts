@@ -5,8 +5,15 @@ export type DataFormat = "JSON" | "YAML" | "Properties" | "PHPArray";
 
 export type Formality = "default" | "less" | "more";
 
-//                          {i18n}, {{i18next}}, %{polyglot}, ${ruby}
-export type Interpolation = "i18n" | "i18next" | "polyglot" | "ruby";
+export type Interpolation =
+  | "i18n" // { variable } without icu messages
+  | "i18next" // {{ variable }}
+  | "polyglot" // %{ variable }
+  | "ruby" // ${ variable }
+  | "icu" // { variable, date }, selections
+  | "laravel" // :variable
+  | "default" // Guess from data
+  | "none"; // No interpolations
 
 export type SimpleenConfig = {
   // en, de
