@@ -1,7 +1,7 @@
 {
   "name": "simpleen",
   "description": "Translate i18n locale files with simpleen translation",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Denis Augsburger <denis.augsburger@simpleen.io> (https://simpleen.io)",
   "bin": {
     "simpleen": "./bin/run"
@@ -20,6 +20,7 @@
     "listr": "^0.14.3",
     "lodash.merge": "^4.6.2",
     "lodash.omit": "^4.5.0",
+    "lodash.sortby": "^4.7.0",
     "md5": "^2.3.0",
     "tslib": "^2.1.0"
   },
@@ -37,6 +38,7 @@
     "@types/listr": "^0.14.2",
     "@types/lodash.merge": "^4.6.6",
     "@types/lodash.omit": "^4.5.6",
+    "@types/lodash.sortby": "^4.7.6",
     "@types/md5": "^2.2.0",
     "@types/node": "^14.14.21",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
