@@ -1,7 +1,7 @@
 import axios from "axios";
 import { SimpleenConfig } from "./config";
 
-const API_URL = "http://localhost:1337/"; // "https://api.simpleen.io/";
+const API_URL = "https://api.simpleen.io/";
 
 export function getData<T>(
   config: SimpleenConfig,
