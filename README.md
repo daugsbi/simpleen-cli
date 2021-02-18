@@ -100,6 +100,7 @@ The output_path can be constructed with additional variables that are replaced a
 | $LOCALE       | Uppercase locale, i. e. FR for French                                                  |
 | $FILE         | Filename of matched translation file, i. e. ./locale/store/product.json => product     | 
 | $FOLDER       | Folder name of matched translation file, i. e. ./locale/store/product.json => store    |
+| $PATH         | Path to matched translation file, i. e. ./locale/store/product.json => ./locale/store/ |
 | $EXTENSION    | Extension of matched translation file, i. e. ./locale/store/product.json => json       |
 <!-- prettier-ignore-end -->
 
@@ -184,7 +185,7 @@ OPTIONS
 
 <!-- commandsstop -->
 
-# Beta
+# Version Control
 
-This version is part of an open beta of Simpleen. As a precaution please make sure that the project is under version control before running `simpleen translate`.
+As a precaution please make sure that the project is under version control before running `simpleen translate`.
 Feel free to get in touch with us for feedback, discussions, improvements or tweet and blog about Simpleen.

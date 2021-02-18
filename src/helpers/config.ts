@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "fs";
 import { CLIError } from "@oclif/errors";
 
-export type DataFormat = "JSON" | "YAML" | "Properties" | "PHPArray";
+export type DataFormat = "JSON" | "YAML" | "Properties" | "PO"; // PHP Array
 
 export type Formality = "default" | "less" | "more";
 

@@ -1,10 +1,14 @@
 import { flags } from "@oclif/command";
 import Command from "../BaseCommand";
-import { CLIError } from "@oclif/errors"; 
+import { CLIError } from "@oclif/errors";
 import inquirer from "inquirer";
 import { target_languages } from "./init";
 import configHelper from "../helpers/config";
-import upload, { getFileName, uploadData } from "../helpers/upload";
+import upload, {
+  getDataFormatfromFile,
+  getFileName,
+  uploadData,
+} from "../helpers/upload";
 import {
   replaceVariablesInPath,
   getFilePaths,
@@ -46,97 +50,105 @@ export class UploadCommand extends Command {
 
     const uploadTasks: ListrTask[] = [];
 
-    // Load source file
-    const inputPath = replaceVariablesInPath(config.input_path, config.input_path, config.source_language);
-    const source = loadTranslation(inputPath);
-
-    // Target files
+    // Read all source files
     const files = await getFilePaths(config.input_path);
 
     for (const file of files) {
-      // Get file from API
-      const sourcePath = replaceVariablesInPath(file, config.output_path, config.source_language);
-      const sourceName = getFileName(sourcePath);
+      const sourceName = getFileName(file);
 
+      const dataformat = getDataFormatfromFile(file);
+
+      // Check if file exists in Simpleen Backend
       const apiFile = await upload.saveFile(config, {
         name: sourceName,
-        dataformat: "JSON",
-        filepath: sourcePath,
-        interpolation: config.interpolation, 
+        dataformat,
+        filepath: file,
+        interpolation: config.interpolation,
         sourceLanguage: config.source_language,
-        targetLanguages: config.target_languages
+        targetLanguages: config.target_languages,
       });
 
       // Read source file
-      const sourceData = loadTranslation(sourcePath);
+      const sourceData = loadTranslation(file);
 
       // For each target language
       if (response.language === "all") {
         // Read all existing target files from disk
-        const tasks: ListrTask[] = config.target_languages.map(
-          (lang) => {
-            return {
-              title: `Upload ${sourcePath} ${config.source_language} => ${lang}`,
-              task: async () => {
-                try {
-                  const targetPath = replaceVariablesInPath(file, config.output_path, lang);
+        const tasks: ListrTask[] = config.target_languages.map((lang) => {
+          return {
+            title: `Upload ${file} ${config.source_language} => ${lang}`,
+            task: async () => {
+              try {
+                const targetPath = replaceVariablesInPath(
+                  file,
+                  config.output_path,
+                  lang
+                );
 
-                  const targetData = loadTranslation(targetPath);
-      
-                  // Upload/Sync with API
-                  const result = await uploadData(config, {
-                    dataformat: "JSON",
-                    sourceData: sourceData,
-                    targetData: targetData,
-                    file: apiFile.id,
-                    sourceLanguage: config.source_language,
-                    targetLanguage: lang,
-                    interpolation: config.interpolation
-                  });
-
-                  return result;
-                } catch (e) {
-                  throw new CLIError(e);
+                // Check if loaded source and target has same extension
+                if (dataformat !== getDataFormatfromFile(targetPath)) {
+                  throw new CLIError(
+                    "Source- and targetfile need to have same extension"
+                  );
                 }
-              },
-            }
-          },
-          {}
-        );
+
+                const targetData = loadTranslation(targetPath);
+
+                // Upload/Sync with API
+                const result = await uploadData(config, {
+                  dataformat: dataformat,
+                  sourceData: sourceData,
+                  targetData: targetData,
+                  file: apiFile.id,
+                  sourceLanguage: config.source_language,
+                  targetLanguage: lang,
+                  interpolation: config.interpolation,
+                });
+
+                return result;
+              } catch (e) {
+                throw new CLIError(e);
+              }
+            },
+          };
+        }, {});
         uploadTasks.push(...tasks);
       } else {
         const lang = response.language;
         uploadTasks.push({
-          title: `Upload ${sourcePath} ${config.source_language} => ${lang}`,
+          title: `Upload ${file} ${config.source_language} => ${lang}`,
           task: async () => {
             try {
-              const targetPath = replaceVariablesInPath(file, config.output_path, lang);
+              const targetPath = replaceVariablesInPath(
+                file,
+                config.output_path,
+                lang
+              );
 
               const targetData = loadTranslation(targetPath);
-      
+
               const result = await uploadData(config, {
-                dataformat: "JSON",
+                dataformat,
                 sourceData: sourceData,
                 targetData: targetData,
                 file: apiFile.id,
                 sourceLanguage: config.source_language,
                 targetLanguage: lang,
-                interpolation: config.interpolation
+                interpolation: config.interpolation,
               });
-
-
+              return result;
             } catch (e) {
               throw new CLIError(e);
             }
-          }
-        })
-      }      
-    };
+          },
+        });
+      }
+    }
 
     // Run tasks, continue with next language if error occurs
     const tasks = new Listr(uploadTasks, { exitOnError: false });
 
-    tasks.run().catch((err) => {
+    tasks.run().catch(() => {
       // handled in Listr, continues with translation to next language
       // console.error(err.message);
     });

@@ -1,16 +1,12 @@
 import { CLIError } from "@oclif/errors";
 import path from "path";
-import md5 from "md5";
 import glob, { IOptions } from "glob";
-import { SimpleenConfig } from "./config";
+import { DataFormat, SimpleenConfig } from "./config";
 import { createData } from "./api";
-import merge from "lodash.merge";
 import { readFileSync, existsSync } from "fs";
 import { writeFileSync } from "fs";
 
-export type TranslationData = {
-  [key: string]: string;
-};
+export type TranslationData = string;
 
 /**
  * Replace variables in provided outputPath
@@ -30,20 +26,15 @@ export function replaceVariablesInPath(
     : path.extname(filePath);
   const folder = path.basename(path.dirname(filePath));
 
+  const targetPath = filePath.split(file)[0];
+
   return outputPath
     .replace("$LOCALE", language.toUpperCase())
     .replace("$locale", language.toLowerCase())
     .replace("$FOLDER", folder)
+    .replace("$PATH", targetPath)
     .replace("$FILE", file)
     .replace("$EXTENSION", ext);
-}
-
-/**
- * Hash path to support multiple files in lock file
- * @param path of file
- */
-export function getHashFromPath(path: string): string {
-  return md5(path).slice(0, 10);
 }
 
 /**
@@ -76,44 +67,47 @@ export function getFilePaths(inputPath: string): Promise<string[]> {
  */
 export function translateIntoLanguage(
   config: SimpleenConfig,
-  translatedData: TranslationData,
+  dataformat: DataFormat,
   toBeTranslated: TranslationData,
   language: string
 ): Promise<TranslationData> {
-  return createData<TranslationData>(config, "translate", {
-    format: "JSON",
+  return createData(config, "translate", {
+    format: dataformat,
     interpolation: config.interpolation,
     source_language: config.source_language,
     target_language: language,
-    text: JSON.stringify(toBeTranslated),
-  }).then((data: TranslationData) => {
+    text: toBeTranslated,
+  }).then((data: unknown) => {
     // merge with translatedData
-    return merge(data, translatedData);
-  })
+    return data as TranslationData;
+  });
 }
 
 export function loadTranslation(file: string): TranslationData {
   try {
     if (existsSync(file)) {
       const data = readFileSync(file, "utf-8");
-      return JSON.parse(data);
+      return data;
     }
     // File does not exist
-    return {};
+    throw new CLIError(`File does not exist: ${file}`);
   } catch (e) {
     // Probably file is corrupt
-    throw new CLIError(
-      `Could not load and parse file: ${file} \n ${e.message}`
-    );
+    throw new CLIError(`Could not load file: ${file} \n ${e.message}`);
   }
 }
 
 export function saveTranslation(
   targetFile: string,
+  dataformat: DataFormat,
   data: TranslationData
 ): void {
   try {
-    writeFileSync(targetFile, JSON.stringify(data, null, 2));
+    if (dataformat === "JSON") {
+      writeFileSync(targetFile, JSON.stringify(data, null, 2));
+    } else {
+      writeFileSync(targetFile, data);
+    }
   } catch (e) {
     throw new CLIError("Could not save translation result - " + e.message);
   }
@@ -121,7 +115,6 @@ export function saveTranslation(
 
 export default {
   replaceVariablesInPath,
-  getHashFromPath,
   getFilePaths,
   loadTranslation,
   translateIntoLanguage,

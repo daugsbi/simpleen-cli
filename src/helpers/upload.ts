@@ -1,9 +1,8 @@
 import path from "path";
-import { CLIError } from "@oclif/errors"
+import { CLIError } from "@oclif/errors";
 import { createData, getData } from "./api";
 import { Formality, DataFormat, Interpolation, SimpleenConfig } from "./config";
 import { TranslationData } from "./translation";
-
 
 export type Segment = {
   path: string;
@@ -29,65 +28,100 @@ export type FileResponse = {
 
 export type UploadSyncData = {
   dataformat: DataFormat;
-  sourceData: TranslationData,
-  targetData: TranslationData,
+  sourceData: TranslationData;
+  targetData: TranslationData;
   sourceLanguage: string;
   targetLanguage: string;
   file: string;
   interpolation: Interpolation;
-}
+};
 
 /**
  * Returns a filename without extension (i.e. /locales/en.json -> en)
  * @param path without variables
  */
-export function getFileName(filePath: string) {
+export function getFileName(filePath: string): string {
   return path.basename(filePath, path.extname(filePath));
 }
 
 /**
- * Saves new file or returns 
+ * Get DataFormat from File
+ * @param filePath to the target files
  */
-export async function saveFile(config: SimpleenConfig, file: File): Promise<FileResponse> {
-  try {
-    // Check if file already exist
-    const fileList = await getData<FileResponse[]>(config, "files", {
-      name: file.name,
-      filepath: file.filepath,
-      _sort: "id:desc"
-    });
+export function getDataFormatfromFile(filePath: string): DataFormat {
+  const extension = path.extname(filePath).toUpperCase();
 
-    // Return existing file from API
-    if(fileList[0]) {
-      return fileList[0];
+  switch (extension) {
+    case ".JSON": {
+      return "JSON";
     }
-
-    // Create new file
-    const createdFile = await createData<FileResponse>(config, "files", {
-      ...file,
-      formality: "default"
-    })
-    return createdFile;
-
-  } catch(e) {
-    throw e;
+    case ".PO": {
+      return "PO";
+    }
+    case ".YML":
+    case ".YAML": {
+      return "YAML";
+    }
+    case ".PROPERTIES": {
+      return "Properties";
+    }
+    case ".JS":
+    case ".TS":
+    case ".JSX":
+    case ".TSX": {
+      throw new CLIError(
+        "Dataformat not supported: Use an extractor for your i18n library, see https://simpleen.io/documentation/translate-cli"
+      );
+    }
+    default: {
+      throw new CLIError("Dataformat not supported for extension " + extension);
+    }
   }
+}
+
+/**
+ * Saves new file or returns
+ */
+export async function saveFile(
+  config: SimpleenConfig,
+  file: File
+): Promise<FileResponse> {
+  // Check if file already exist
+  const fileList = await getData<FileResponse[]>(config, "files", {
+    name: file.name,
+    filepath: file.filepath,
+    _sort: "id:desc",
+  });
+
+  // Return existing file from API
+  if (fileList[0]) {
+    return fileList[0];
+  }
+
+  // Create new file
+  const createdFile = await createData<FileResponse>(config, "files", {
+    ...file,
+    formality: "default",
+  });
+  return createdFile;
 }
 
 /**
  * Uploads file data
  */
-export function uploadData(config: SimpleenConfig, syncData: UploadSyncData) {
+export function uploadData(
+  config: SimpleenConfig,
+  syncData: UploadSyncData
+): unknown {
   return createData(config, "segments/upload", {
     ...syncData,
-    sourceData: JSON.stringify(syncData.sourceData),
-    targetData: JSON.stringify(syncData.targetData)
+    sourceData: syncData.sourceData,
+    targetData: syncData.targetData,
   });
 }
-
 
 export default {
   getFileName,
   saveFile,
-  uploadData
+  uploadData,
 };

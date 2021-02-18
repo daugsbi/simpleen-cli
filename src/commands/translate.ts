@@ -2,13 +2,11 @@ import { flags } from "@oclif/command";
 import chalk from "chalk";
 import Command from "../BaseCommand";
 import { CLIError } from "@oclif/errors";
-import flatten from "flat";
-import omit from "lodash.omit";
 import Listr, { ListrTask } from "listr";
 import configHelper from "../helpers/config";
-import lockHelper from "../helpers/lock";
 import translationHelper from "../helpers/translation";
 import { getUsage } from "../helpers/usage";
+import { getDataFormatfromFile } from "../helpers/upload";
 
 /**
  * Translates project to the configured target languages
@@ -35,9 +33,6 @@ export class TranslateCommand extends Command {
 
     const translationTasks: ListrTask[] = [];
 
-    // Read lock file
-    const lockData = lockHelper.loadLockFile(flags.lockFile);
-
     // Read all source files to translate
     const files = await translationHelper.getFilePaths(config.input_path);
 
@@ -53,45 +48,36 @@ export class TranslateCommand extends Command {
             config.output_path,
             language
           );
-          const targetHash = translationHelper.getHashFromPath(targetFile);
 
-          const translatedData = lockData?.[targetHash]?.[language]
-            ? lockData[targetHash][language]
-            : {};
+          const dataformat = getDataFormatfromFile(file);
 
-          // Omit keys from lock file
-          const omitKeys = Object.keys(flatten(translatedData));
-
-          const toBeTranslated = omit(translationData, omitKeys);
-
-          const total = Object.keys(flatten(translationData)).length;
-          const totalTranslate = Object.keys(toBeTranslated).length;
+          // Check if target and source format is same
+          if (dataformat !== getDataFormatfromFile(targetFile)) {
+            throw new CLIError(
+              "Source- and targetfile need to have same extension"
+            );
+          }
 
           // Add to tasks
           translationTasks.push({
-            title: `Translate ${totalTranslate}/${total} ${config.source_language} => ${language}`,
+            title: `Translate ${file} ${config.source_language} => ${language}`,
             task: async () => {
               try {
                 const result = await translationHelper.translateIntoLanguage(
                   config,
-                  translatedData,
-                  toBeTranslated,
+                  dataformat,
+                  translationData,
                   language
                 );
 
-                translationHelper.saveTranslation(targetFile, result);
+                translationHelper.saveTranslation(
+                  targetFile,
+                  dataformat,
+                  result
+                );
               } catch (e) {
                 throw new CLIError(e);
               }
-            },
-            skip: () => {
-              if (total === 0) {
-                return "No data found to translate";
-              }
-              if (totalTranslate === 0) {
-                return `All keys are locked (${omitKeys.length} of ${total})`;
-              }
-              return false;
             },
           });
         });
@@ -118,7 +104,7 @@ export class TranslateCommand extends Command {
     // Run tasks, continue with next language if error occurs
     const tasks = new Listr(translationTasks, { exitOnError: false });
 
-    tasks.run().catch((err) => {
+    tasks.run().catch(() => {
       // handled in Listr, continues with translation to next language
       // console.error(err.message);
     });

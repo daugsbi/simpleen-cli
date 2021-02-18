@@ -1,20 +1,21 @@
 import axios from "axios";
 import { SimpleenConfig } from "./config";
 
-const API_URL = "https://api.simpleen.io/";
+const API_URL = "http://localhost:1337/"; // "https://api.simpleen.io/";
 
-export function getData<T>(config: SimpleenConfig, resource: string, params: any = {}): Promise<T> {
+export function getData<T>(
+  config: SimpleenConfig,
+  resource: string,
+  params: any = {}
+): Promise<T> {
   return new Promise((resolve, reject) => {
     axios
-      .get(
-        API_URL + resource,
-        {
-          params: {
-            auth_key: config.auth_key,
-            ...params
-          },
-        }
-      )
+      .get(API_URL + resource, {
+        params: {
+          auth_key: config.auth_key,
+          ...params,
+        },
+      })
       .then((value: { data: T }) => {
         resolve(value.data);
       })
@@ -24,20 +25,22 @@ export function getData<T>(config: SimpleenConfig, resource: string, params: any
             "Authentication error - check your authentication key in your config file"
           );
         }
-        reject(
-          `${e.response ? e.response.status : ""} - ${e.message}`
-        );
+        reject(`${e.response ? e.response.status : ""} - ${e.message}`);
       });
   });
 }
 
-export function createData<T>(config: SimpleenConfig, resource: string, entry: Partial<T> = {}): Promise<T> {
+export function createData<T>(
+  config: SimpleenConfig,
+  resource: string,
+  entry: Partial<T> = {}
+): Promise<T> {
   return new Promise((resolve, reject) => {
     return axios
       .post(
         API_URL + resource,
         {
-          ...entry
+          ...entry,
         },
         {
           params: {
@@ -54,20 +57,22 @@ export function createData<T>(config: SimpleenConfig, resource: string, entry: P
             "Authentication error - check your authentication key in your config file"
           );
         }
-        reject(
-          `${e.response ? e.response.status : ""} - ${e.message}}`
-        );
+        reject(`${e.response ? e.response.status : ""} - ${e.message}`);
       });
   });
 }
 
-export function updataData<T>(config: SimpleenConfig, resource: string, entry: Partial<T> = {}): Promise<T> {
+export function updataData<T>(
+  config: SimpleenConfig,
+  resource: string,
+  entry: Partial<T> = {}
+): Promise<T> {
   return new Promise((resolve, reject) => {
     axios
       .post(
         API_URL + resource,
         {
-          ...entry
+          ...entry,
         },
         {
           params: {
@@ -85,9 +90,7 @@ export function updataData<T>(config: SimpleenConfig, resource: string, entry: P
             "Authentication error - check your authentication key in your config file"
           );
         }
-        reject(
-          `${e.response ? e.response.status : ""} - ${e.message}}`
-        );
+        reject(`${e.response ? e.response.status : ""} - ${e.message}`);
       });
   });
 }
