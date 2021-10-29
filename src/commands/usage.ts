@@ -36,7 +36,10 @@ export class UsageCommand extends Command {
         );
       }
     } catch (e) {
-      throw new CLIError(e);
+      if (e instanceof Error || typeof e === "string") {
+        throw new CLIError(e);
+      }
+      throw new CLIError("Unknown error");
     }
   }
 }

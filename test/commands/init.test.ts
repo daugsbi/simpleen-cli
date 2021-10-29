@@ -20,6 +20,9 @@ describe("Test init command", () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(global.console, "error");
+    jest.spyOn(global.console, "warn");
+    jest.spyOn(global.console, "log");
     inquirerSpy = jest
       .spyOn(inquirer, "prompt")
       // @ts-ignore

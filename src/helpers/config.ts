@@ -55,9 +55,14 @@ export function saveConfig(responses: SimpleenConfig, path: string): void {
       encoding: "utf-8",
     });
   } catch (e) {
-    throw new CLIError(
-      `Could not write config file to ${path}. Error: ${e.message}`
-    );
+    if (e instanceof Error) {
+      throw new CLIError(
+        `Could not write config file to ${path}. Error: ${
+          e.message ? e.message : e
+        }`
+      );
+    }
+    throw new CLIError(`Could not write config file to ${path}. Error: ${e}`);
   }
 }
 

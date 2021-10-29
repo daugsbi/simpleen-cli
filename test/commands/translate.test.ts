@@ -23,6 +23,10 @@ describe("Test translate command", () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(global.console, "error");
+    jest.spyOn(global.console, "warn");
+    jest.spyOn(global.console, "log");
+
     configSpy = jest.spyOn(config, "loadConfig").mockReturnValue(initConfig);
     loadTranslationSpy = jest
       .spyOn(translation, "loadTranslation")

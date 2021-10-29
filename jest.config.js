@@ -1,4 +1,5 @@
 module.exports = {
+  verbose: true,
   testEnvironment: "node",
   moduleFileExtensions: ["ts", "js", "json"],
   testMatch: ["<rootDir>/test/**/*.ts"],

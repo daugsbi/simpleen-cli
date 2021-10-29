@@ -3,13 +3,14 @@ import chalk from "chalk";
 
 export default abstract class extends Command {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async catch(err: Error) {
-    if (err.message) {
+  async catch(err: unknown) {
+    if (err instanceof Error) {
       console.error(chalk.red(err.message));
     }
     if (typeof err === "string") {
       console.error(chalk.red(err));
     }
+    console.error(chalk.red("Unknown global error " + err));
 
     // console.error(chalk.red(JSON.stringify(err)));
 

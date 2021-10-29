@@ -92,8 +92,11 @@ export function loadTranslation(file: string): TranslationData {
     // File does not exist
     throw new CLIError(`File does not exist: ${file}`);
   } catch (e) {
-    // Probably file is corrupt
-    throw new CLIError(`Could not load file: ${file} \n ${e.message}`);
+    if (e instanceof Error) {
+      // Probably file is corrupt
+      throw new CLIError(`Could not load file: ${file} \n ${e.message}`);
+    }
+    throw new CLIError(`Could not load file: ${file} \n ${e}`);
   }
 }
 
@@ -109,7 +112,10 @@ export function saveTranslation(
       writeFileSync(targetFile, data);
     }
   } catch (e) {
-    throw new CLIError("Could not save translation result - " + e.message);
+    if (e instanceof Error) {
+      throw new CLIError("Could not save translation result - " + e.message);
+    }
+    throw new CLIError("Could not save translation result - " + e);
   }
 }
 
