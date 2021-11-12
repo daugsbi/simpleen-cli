@@ -23,6 +23,11 @@ export type SimpleenConfig = {
   input_path: string;
   output_path: string;
 
+  // optional, manualy added, i. e. { "FR": 2, "ES": 3 },
+  // which means translate from source_language into French and use glossary with ID 2.
+  // use glossary with id 3 to translate into spanish
+  glossary?: { [target_language: string]: number }; // {}
+
   // output_path: string;
   auth_key: string;
 };

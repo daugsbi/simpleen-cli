@@ -121,8 +121,7 @@ export const target_languages = sortBy(
     { name: "Japanese", value: "JA" },
     { name: "Polish", value: "PL" },
     {
-      name:
-        "Portuguese (all Portuguese varieties excluding Brazilian Portuguese)",
+      name: "Portuguese (all Portuguese varieties excluding Brazilian Portuguese)",
       value: "PT-PT",
     },
     { name: "Portuguese (Brazilian)", value: "PT-BR" },
@@ -209,6 +208,7 @@ export class InitCommand extends Command {
       {
         name: "interpolation",
         message: "Select your interpolation",
+        default: "default",
         type: "list",
         choices: [
           { value: "polyglot", name: "%{ variable }" },
@@ -230,12 +230,24 @@ export class InitCommand extends Command {
         messsage:
           "Where is your locale file saved?  (Use glob patterns like ./**/en.json or ./**/en/*.json for multiple files)",
         type: "input",
+        validate: function (answer) {
+          if (answer.length == 0) {
+            return "You must enter an input path. (Use glob patterns like ./**/en.json or ./**/en/*.json for multiple files)";
+          }
+          return true;
+        },
       },
       {
         name: "output_path",
         message:
           "Where do you want to save the translations? (Combine with variables $LOCALE, $locale, $FOLDER, $FILE which are provided by the input path)",
         type: "input",
+        validate: function (answer) {
+          if (answer.length == 0) {
+            return "You must enter an output path. (Combine with variables $LOCALE, $locale, $FOLDER, $FILE which are provided by the input path)";
+          }
+          return true;
+        },
       },
       {
         name: "auth_key",

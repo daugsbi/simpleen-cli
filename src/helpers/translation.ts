@@ -71,11 +71,17 @@ export function translateIntoLanguage(
   toBeTranslated: TranslationData,
   language: string
 ): Promise<TranslationData> {
+  const glossary =
+    config.glossary && config.glossary[language]
+      ? config.glossary[language]
+      : undefined;
+
   return createData(config, "translate", {
     format: dataformat,
     interpolation: config.interpolation,
     source_language: config.source_language,
     target_language: language,
+    glossary,
     text: toBeTranslated,
   }).then((data: unknown) => {
     // merge with translatedData

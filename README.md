@@ -13,12 +13,13 @@ Translate i18n locale files with Simpleen
 - [Installation](#installation)
 - [Commands](#commands)
   - [`simpleen init`](#simpleen-init)
+    - [Add glossary manualy](#add-glossary-manualy)
   - [[Deprecated - use simpleen upload] `simpleen lock`](#deprecated---use-simpleen-upload-simpleen-lock)
   - [`simpleen translate`](#simpleen-translate)
   - [`simpleen upload`](#simpleen-upload)
   - [`simpleen usage`](#simpleen-usage)
   - [`simpleen help [COMMAND]`](#simpleen-help-command)
-- [Beta](#beta)
+- [Version Control](#version-control)
 <!-- tocstop -->
 
 # Usage
@@ -114,6 +115,36 @@ The created configuration file could look like this:
   "input_path": "./public/locales/en/*.json",
   "output_path": "./public/locales/$locale/$FILE.json",
   "auth_key": "AUTHENTICATION_KEY"
+}
+```
+
+### Add glossary manualy
+
+Add your glossaries in the configuration file (simpleen.config.json) manually.
+Use one glossary per target language:
+
+```JSON
+{
+  "source_language": "EN",
+  "target_languages": ["DE", "PT-BR"],
+  "interpolation": "i18n",
+  "input_path": "./public/locales/en/*.json",
+  "output_path": "./public/locales/$locale/$FILE.json",
+  "auth_key": "AUTHENTICATION_KEY",
+  "glossary": {
+    "DE": 100,
+    "PT-BR": 103
+  }
+}
+```
+
+You don't need to provide a glossary for each target language if you don't need one. Just skip it
+
+```JSON
+{
+  "glossary": {
+    "DE": 100
+  }
 }
 ```
 
