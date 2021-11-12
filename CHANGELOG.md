@@ -6,7 +6,11 @@ Simpleen is a [translation platform for i18n projects](https://simpleen.io/).
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.2] - 2021-03.17
+## [0.5.1] - 2021-11-12
+
+- Use glossary for CLI (manual configuration)
+
+## [0.4.2] - 2021-03-17
 
 - Add sprintf interpolation to init, i.e. %s and %d
 

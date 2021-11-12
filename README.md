@@ -13,7 +13,7 @@ Translate i18n locale files with Simpleen
 - [Installation](#installation)
 - [Commands](#commands)
   - [`simpleen init`](#simpleen-init)
-    - [Add glossary manualy](#add-glossary-manualy)
+    - [Add glossary manually](#add-glossary-manually)
   - [[Deprecated - use simpleen upload] `simpleen lock`](#deprecated---use-simpleen-upload-simpleen-lock)
   - [`simpleen translate`](#simpleen-translate)
   - [`simpleen upload`](#simpleen-upload)
@@ -118,7 +118,7 @@ The created configuration file could look like this:
 }
 ```
 
-### Add glossary manualy
+### Add glossary manually
 
 Add your glossaries in the configuration file (simpleen.config.json) manually.
 Use one glossary per target language:
