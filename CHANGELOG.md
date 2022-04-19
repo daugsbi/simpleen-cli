@@ -6,6 +6,12 @@ Simpleen is a [translation platform for i18n projects](https://simpleen.io/).
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2022-04-19
+
+- Add Markdown support for translation command
+- Upload of Markdown not supported yet
+- Upgrade depencies
+
 ## [0.5.1] - 2021-11-12
 
 - Use glossary for CLI (manual configuration)

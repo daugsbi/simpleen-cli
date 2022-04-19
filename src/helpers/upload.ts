@@ -50,6 +50,7 @@ export function getFileName(filePath: string): string {
  */
 export function getDataFormatfromFile(filePath: string): DataFormat {
   const extension = path.extname(filePath).toUpperCase();
+  console.log(extension);
 
   switch (extension) {
     case ".JSON": {
@@ -64,6 +65,10 @@ export function getDataFormatfromFile(filePath: string): DataFormat {
     }
     case ".PROPERTIES": {
       return "Properties";
+    }
+    case ".MD":
+    case ".MDX": {
+      return "Markdown";
     }
     case ".JS":
     case ".TS":
@@ -113,6 +118,10 @@ export function uploadData(
   config: SimpleenConfig,
   syncData: UploadSyncData
 ): unknown {
+  if (syncData.dataformat == "Markdown") {
+    throw new Error("Upload of Markdown is currently not supported");
+  }
+
   return createData(config, "segments/upload", {
     ...syncData,
     sourceData: syncData.sourceData,
