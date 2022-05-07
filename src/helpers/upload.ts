@@ -50,7 +50,6 @@ export function getFileName(filePath: string): string {
  */
 export function getDataFormatfromFile(filePath: string): DataFormat {
   const extension = path.extname(filePath).toUpperCase();
-  console.log(extension);
 
   switch (extension) {
     case ".JSON": {

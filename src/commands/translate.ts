@@ -8,6 +8,8 @@ import translationHelper from "../helpers/translation";
 import { getUsage } from "../helpers/usage";
 import { getDataFormatfromFile } from "../helpers/upload";
 
+const timeout = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 /**
  * Translates project to the configured target languages
  * considers the lock file to exclude allready translated/verfied translations
@@ -75,6 +77,9 @@ export class TranslateCommand extends Command {
                   dataformat,
                   result
                 );
+
+                // Timeout for not calling too many times the API
+                await timeout(3000);
               } catch (e) {
                 if (e instanceof Error || typeof e === "string") {
                   throw new CLIError(e);
