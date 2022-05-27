@@ -43,7 +43,7 @@ This can also be combined with the i18n extractor of your i18n library which lea
 You can install the CLI globally
 
 ```sh-session
-$ yarn add -g simpleen
+$ yarn global add simpleen
 $ simpleen init
 $ simpleen translate
 ```
